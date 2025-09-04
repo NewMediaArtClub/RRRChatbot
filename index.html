@@ -1,23 +1,135 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Your site</title>
+<head>
+  <meta charset="utf-8" />
+  <title>Simple Page with p5 Overlay</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      background: url("RRRBG.png") center center / cover no-repeat fixed;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      overflow: hidden;
+    }
 
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/addons/p5.sound.min.js"></script>
-    <link rel="stylesheet" href="style.css">
-  </head>
-  <body>
-    <iframe
-      id="chatframe"
-      src="https://www.chatbase.co/chatbot-iframe/npZkiL64w-LOQmVRbGomk"
-      title="Chatbot"
-      loading="eager"
-      referrerpolicy="no-referrer"
-    ></iframe>
+    .chat-wrap {
+      position: fixed;
+      right: 2rem;
+      bottom: 2rem;
+      display: grid;
+      place-items: centre;
+      z-index: 5;
+    }
 
-    <script src="sketch.js"></script>
-  </body>
+    .chat-wrap img {
+      width: 220px;
+      max-width: 40vw;
+      height: auto;
+      display: block;
+    }
+
+    .bubble-fallback {
+      display: none;
+      background: white;
+      padding: 1rem 1.25rem;
+      border-radius: 1rem;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+      color: #111;
+      font-size: 0.95rem;
+      max-width: 260px;
+      position: relative;
+    }
+    .bubble-fallback::after {
+      content: "";
+      position: absolute;
+      right: 18px;
+      bottom: -14px;
+      width: 0;
+      height: 0;
+      border: 14px solid transparent;
+      border-top-color: white;
+      border-bottom: 0;
+    }
+    .no-img .bubble-fallback { display: block; }
+
+    #p5_canvas_holder canvas {
+      position: fixed !important;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-wrap" id="chat">
+    <img src="chat-bubble.png" alt="Chat bubble" onerror="this.remove(); document.getElementById('chat').classList.add('no-img');" />
+    <div class="bubble-fallback">Hello. How can I help?</div>
+  </div>
+
+  <div id="p5_canvas_holder"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <script>
+    let holder;
+    new p5(p => {
+      p.setup = function() {
+        holder = document.getElementById('p5_canvas_holder');
+        const c = p.createCanvas(p.windowWidth, p.windowHeight);
+        c.parent(holder);
+        p.textAlign(p.CENTER, p.BOTTOM);
+        p.noStroke();
+      };
+      p.windowResized = function() {
+        p.resizeCanvas(p.windowWidth, p.windowHeight);
+      };
+      p.draw = function() {
+        p.clear();
+        const msg = "ask questions here >";
+        const baseSize = Math.max(18, Math.min(42, p.width * 0.025));
+        p.textSize(baseSize);
+        const t = p.millis() * 0.004;
+        const alpha = p.map(Math.sin(t), -1, 1, 70, 255);
+        const padX = 16, padY = 10;
+        const w = p.textWidth(msg) + padX * 2;
+        const h = baseSize + padY * 2;
+        const x = p.width / 2 - w / 2;
+        const y = p.height - 24 - h;
+        p.fill(0, 0, 0, 120);
+        p.rect(x, y, w, h, 12);
+        p.fill(255, 255, 255, alpha);
+        p.text(msg, p.width / 2, p.height - 24 - padY);
+      };
+    });
+  </script>
+
+  <!-- Chatbase Embed -->
+  <script>
+  (function(){
+    if(!window.chatbase||window.chatbase("getState")!=="initialized"){
+      window.chatbase=(...arguments)=>{
+        if(!window.chatbase.q){window.chatbase.q=[]}
+        window.chatbase.q.push(arguments)
+      };
+      window.chatbase=new Proxy(window.chatbase,{
+        get(target,prop){
+          if(prop==="q"){return target.q}
+          return(...args)=>target(prop,...args)
+        }
+      })
+    }
+    const onLoad=function(){
+      const script=document.createElement("script");
+      script.src="https://www.chatbase.co/embed.min.js";
+      script.id="npZkiL64w-LOQmVRbGomk";
+      script.domain="www.chatbase.co";
+      document.body.appendChild(script)
+    };
+    if(document.readyState==="complete"){onLoad()}
+    else{window.addEventListener("load",onLoad)}
+  })();
+  </script>
+</body>
 </html>
