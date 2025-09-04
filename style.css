@@ -1,13 +1,29 @@
+/* Reset basics so 100% and 100vh behave as expected */
 html, body {
+  height: 100%;
   margin: 0;
   padding: 0;
-  height: 100%;
 }
 
-canvas {
+/* Make the main area fill the viewport height on mobiles and desktops */
+.full-viewport {
+  /* Modern dynamic viewport units handle mobile browser UI chrome */
+  min-height: 100dvh;      /* modern */
+  min-height: 100svh;      /* small viewport for iOS */
+  min-height: 100vh;       /* fallback */
+}
+
+/* Make the iframe fill its container */
+.full-viewport iframe {
   display: block;
+  width: 100%;
+  height: 100dvh;          /* modern */
+  height: 100svh;          /* iOS */
+  height: 100vh;           /* fallback */
+  border: 0;
 }
 
-body {
-
+/* Optional: if you want no page scroll because the iframe handles its own scroll */
+html, body {
+  overflow: hidden;
 }
