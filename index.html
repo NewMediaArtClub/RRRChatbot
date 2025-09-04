@@ -1,21 +1,24 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
     <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/p5.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/p5@1.11.10/lib/addons/p5.sound.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8" />
-
+    <link rel="stylesheet" href="style.css">
+    <title>Your site</title>
   </head>
   <body>
-    <main>
-     <iframe
-    src="https://www.chatbase.co/chatbot-iframe/npZkiL64w-LOQmVRbGomk"
-    width="100%"
-    style="height: 100%"
-    frameborder="0"
-></iframe>
+    <main class="full-viewport">
+      <iframe
+        src="https://www.chatbase.co/chatbot-iframe/npZkiL64w-LOQmVRbGomk"
+        title="Chatbot"
+        loading="eager"
+        referrerpolicy="no-referrer"
+      ></iframe>
     </main>
+
     <script src="sketch.js"></script>
   </body>
 </html>
