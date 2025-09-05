@@ -12,9 +12,9 @@
       height: 100%;
     }
     body {
-      body {
-      background: url("RRRBG.png") center center / 80% auto no-repeat fixed;
-}
+      background: url("RRRBG.png") center center no-repeat fixed;
+      background-size: 80% auto;  /* 80% of viewport width, height adjusts */
+      background-color: black;    /* fill gaps with black, change if needed */
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       overflow: hidden;
     }
@@ -54,7 +54,7 @@
       max-width: 32vw;
       height: auto;
       display: block;
-      margin: 20px;   /* adds space on all sides */
+      margin: 20px;
     }
 
     .bubble-fallback {
@@ -163,4 +163,3 @@
   </script>
 </body>
 </html>
-
