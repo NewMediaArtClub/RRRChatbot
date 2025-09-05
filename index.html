@@ -5,41 +5,34 @@
   <title>Simple Page with p5 Overlay and Chatframe</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    /* Reset margins and size */
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
     }
+
+    /* Background image at ~80% scale, centred, with visible gaps */
     body {
-      background: url("RRRBG.png") center center no-repeat fixed;
-      background-size: 80% auto;  /* 80% of viewport width, height adjusts */
-      background-color: black;    /* fill gaps with black, change if needed */
+      background-image: url("RRRBG.png");
+      background-position: center center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: 80vw auto;   /* 80% of viewport width */
+      background-color: black;      /* gaps show as black */
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       overflow: hidden;
     }
 
-    /* Fullscreen iframe */
-    #chatframe {
-      position: fixed;
+    /* p5 canvas above background, but transparent to show it */
+    #p5_canvas_holder canvas {
+      position: fixed !important;
       inset: 0;
-      width: 100vw;
-      height: 100dvh;   /* modern browsers */
-      height: 100svh;   /* iOS small viewport */
-      height: 100vh;    /* fallback */
-      border: 0;
-      display: block;
       z-index: 1;
+      pointer-events: none;
+      background: transparent !important;
     }
 
-    /* If p5 creates a canvas, keep it behind the iframe unless overridden */
-    canvas {
-      position: fixed;
-      inset: 0;
-      z-index: 0;
-    }
-
-    /* Chat bubble wrap */
+    /* Chat bubble UI on top */
     .chat-wrap {
       position: fixed;
       right: 2rem;
@@ -48,9 +41,8 @@
       place-items: center;
       z-index: 5;
     }
-
     .chat-wrap img {
-      width: 176px;
+      width: 176px;     /* your 20% smaller image */
       max-width: 32vw;
       height: auto;
       display: block;
@@ -80,19 +72,9 @@
       border-bottom: 0;
     }
     .no-img .bubble-fallback { display: block; }
-
-    #p5_canvas_holder canvas {
-      position: fixed !important;
-      inset: 0;
-      z-index: 10;
-      pointer-events: none;
-    }
   </style>
 </head>
 <body>
-  <!-- iframe -->
-  <iframe id="chatframe" src=""></iframe>
-
   <!-- chat bubble -->
   <div class="chat-wrap" id="chat">
     <img src="chat-bubble.png" alt="Chat bubble" onerror="this.remove(); document.getElementById('chat').classList.add('no-img');" />
@@ -103,10 +85,9 @@
   <div id="p5_canvas_holder"></div>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
   <script>
-    let holder;
     new p5(p => {
       p.setup = function() {
-        holder = document.getElementById('p5_canvas_holder');
+        const holder = document.getElementById('p5_canvas_holder');
         const c = p.createCanvas(p.windowWidth, p.windowHeight);
         c.parent(holder);
         p.textAlign(p.CENTER, p.BOTTOM);
@@ -139,14 +120,14 @@
   <script>
   (function(){
     if(!window.chatbase||window.chatbase("getState")!=="initialized"){
-      window.chatbase=(...arguments)=>{
+      window.chatbase=(...args)=>{
         if(!window.chatbase.q){window.chatbase.q=[]}
-        window.chatbase.q.push(arguments)
+        window.chatbase.q.push(args)
       };
       window.chatbase=new Proxy(window.chatbase,{
         get(target,prop){
           if(prop==="q"){return target.q}
-          return(...args)=>target(prop,...args)
+          return(...a)=>target(prop,...a)
         }
       })
     }
