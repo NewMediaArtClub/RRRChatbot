@@ -2,12 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Simple Page with p5 Overlay</title>
+  <title>Simple Page with p5 Overlay and Chatframe</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
+    /* Reset margins and size */
     html, body {
-      height: 100%;
       margin: 0;
+      padding: 0;
+      height: 100%;
     }
     body {
       background: url("RRRBG.png") center center / cover no-repeat fixed;
@@ -15,12 +17,33 @@
       overflow: hidden;
     }
 
+    /* Fullscreen iframe */
+    #chatframe {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;   /* modern browsers */
+      height: 100svh;   /* iOS small viewport */
+      height: 100vh;    /* fallback */
+      border: 0;
+      display: block;
+      z-index: 1;
+    }
+
+    /* If p5 creates a canvas, keep it behind the iframe unless overridden */
+    canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+    }
+
+    /* Chat bubble wrap */
     .chat-wrap {
       position: fixed;
       right: 2rem;
       bottom: 2rem;
       display: grid;
-      place-items: centre;
+      place-items: center;
       z-index: 5;
     }
 
@@ -64,13 +87,17 @@
   </style>
 </head>
 <body>
+  <!-- iframe -->
+  <iframe id="chatframe" src=""></iframe>
+
+  <!-- chat bubble -->
   <div class="chat-wrap" id="chat">
     <img src="chat-bubble.png" alt="Chat bubble" onerror="this.remove(); document.getElementById('chat').classList.add('no-img');" />
     <div class="bubble-fallback">Hello. How can I help?</div>
   </div>
 
+  <!-- p5 overlay -->
   <div id="p5_canvas_holder"></div>
-
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
   <script>
     let holder;
@@ -133,3 +160,4 @@
   </script>
 </body>
 </html>
+
